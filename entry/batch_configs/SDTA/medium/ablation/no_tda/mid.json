@@ -1,0 +1,151 @@
+{
+  "_doc": "Ablation (no temporal-distance attention), SDTA capacity medium (E=2, D=1), cohort mid, W=4, 5 seeds. The paper's ablation table reports the medium capacity; small and large are provided for completeness.",
+  "name": "SDTA_medium_abl_no_tda_mid",
+  "model_id": "SDTA",
+  "datasets": [
+    "electricity"
+  ],
+  "stages": [
+    "pretrain",
+    "train",
+    "test"
+  ],
+  "auto_enc_in": true,
+  "cuda_visible_devices": "0",
+  "min_free_mb": 4000,
+  "concurrent": 2,
+  "delay": 10,
+  "env": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "run_name": {
+    "base": "arch_scan",
+    "include": [
+      "e_layers",
+      "d_layers",
+      "mask_ratio",
+      "lineage_disabled",
+      "sampling_max",
+      "lineage_mlp_layers",
+      "current_views",
+      "seed"
+    ],
+    "aliases": {
+      "e_layers": "Enc",
+      "d_layers": "Dec",
+      "mask_ratio": "Mask",
+      "sampling_max": "SMax",
+      "lineage_mlp_layers": "Lmlp",
+      "current_views": "W",
+      "seed": "S",
+      "lineage_disabled": "NoLin"
+    }
+  },
+  "grid": {
+    "pretrain.e_layers": [
+      2
+    ],
+    "pretrain.d_layers": [
+      1
+    ],
+    "pretrain.mask_ratio": [
+      0.5
+    ],
+    "pretrain.sampling_max": [
+      12
+    ],
+    "pretrain.lineage_mlp_layers": [
+      1
+    ],
+    "pretrain.current_views": [
+      4
+    ],
+    "seed": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "pretrain.lineage_disabled": [
+      1
+    ]
+  },
+  "stage_defaults": {
+    "pretrain": {
+      "device": "auto",
+      "features": "M",
+      "input_len": 96,
+      "patch_len": 8,
+      "batch_size": 16,
+      "train_epochs": 50,
+      "d_model": 32,
+      "n_heads": 4,
+      "d_ff": 64,
+      "time_steps": 1000,
+      "diffusion_space": "patch",
+      "sampling_min": 1,
+      "use_norm": 1,
+      "scheduler": "cosine",
+      "pretrain_causal": 1,
+      "num_workers": 4,
+      "w_chunk_size": 0,
+      "checkpoint_every": 10,
+      "learning_rate": 0.001,
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "lr_decay": 0.9,
+      "e_layers": 2,
+      "d_layers": 1,
+      "mask_ratio": 0.5,
+      "sampling_max": 12,
+      "lineage_mlp_layers": 1,
+      "current_views": 4,
+      "lineage_type": "relative",
+      "kv_share_lineage": 0,
+      "forced_first_shift_one": 1,
+      "lineage_disabled": 0,
+      "diffusion_noise_disabled": 0,
+      "past_disabled": 0
+    },
+    "train": {
+      "dec_layers": 1,
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "batch_size": 16,
+      "learning_rate": 0.0001,
+      "train_epochs": 10,
+      "patience": 3,
+      "pct_start": 0.3,
+      "lr_decay": 0.5,
+      "lradj": "step",
+      "num_workers": 1,
+      "freeze_encoder": 0,
+      "pred_lens": [
+        96,
+        192,
+        336,
+        720
+      ]
+    },
+    "test": {
+      "batch_size": 16,
+      "num_workers": 1,
+      "pred_lens": [
+        96,
+        192,
+        336,
+        720
+      ]
+    }
+  },
+  "variants": [
+    {
+      "name": "pretrained",
+      "load_pretrain_weights": 1
+    }
+  ]
+}

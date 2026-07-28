@@ -1,0 +1,7 @@
+# TimeDART - standard horizons, all 12 datasets.
+
+TimeDART/medium/light
+TimeDART/medium/mid
+TimeDART/medium/heavy
+TimeDART/medium/pems_light
+TimeDART/medium/pems_heavy

@@ -1,0 +1,117 @@
+{
+  "_doc": "TIMING run for SDTA (SDTA_E2_D2). 6-epoch pretrain+train on a channel ladder, seed 97, num_workers=1. NOTE: §C 的 W=2 並行數據由 one-chain-per-GPU orchestrator 產生（patch W=4 manifest 成 current_views=2、pin 每卡一 chain）,非直接跑此 config;此 config 若以 batch.py 直跑為序列(concurrent=1, GPU0)、數值相同. Drop epoch1, average epochs 2..6 of elapsed_sec per stage. [W=2 variant]",
+  "name": "time_SDTA_E2_D2_W2",
+  "model_id": "SDTA",
+  "datasets": [
+    "ETTh1",
+    "weather",
+    "PEMS08",
+    "electricity",
+    "PEMS07"
+  ],
+  "stages": [
+    "pretrain",
+    "train"
+  ],
+  "auto_enc_in": true,
+  "cuda_visible_devices": "0",
+  "min_free_mb": 1000,
+  "concurrent": 1,
+  "env": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "run_name": {
+    "base": "time",
+    "include": [
+      "e_layers",
+      "d_layers",
+      "current_views",
+      "seed"
+    ],
+    "aliases": {
+      "e_layers": "Enc",
+      "d_layers": "Dec",
+      "current_views": "W",
+      "seed": "S"
+    }
+  },
+  "grid": {
+    "pretrain.e_layers": [
+      2
+    ],
+    "pretrain.d_layers": [
+      2
+    ],
+    "pretrain.current_views": [
+      2
+    ],
+    "seed": [
+      97
+    ]
+  },
+  "stage_defaults": {
+    "pretrain": {
+      "device": "auto",
+      "features": "M",
+      "input_len": 96,
+      "patch_len": 8,
+      "batch_size": 16,
+      "train_epochs": 6,
+      "d_model": 32,
+      "n_heads": 4,
+      "d_ff": 64,
+      "time_steps": 1000,
+      "diffusion_space": "patch",
+      "sampling_min": 1,
+      "use_norm": 1,
+      "scheduler": "cosine",
+      "pretrain_causal": 1,
+      "num_workers": 1,
+      "w_chunk_size": 0,
+      "checkpoint_every": 10,
+      "learning_rate": 0.001,
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "lr_decay": 0.9,
+      "e_layers": 2,
+      "d_layers": 2,
+      "mask_ratio": 0.5,
+      "sampling_max": 12,
+      "lineage_mlp_layers": 1,
+      "current_views": 2,
+      "lineage_type": "relative",
+      "kv_share_lineage": 0,
+      "forced_first_shift_one": 1,
+      "lineage_disabled": 0,
+      "diffusion_noise_disabled": 0,
+      "past_disabled": 0
+    },
+    "train": {
+      "dec_layers": 1,
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "batch_size": 16,
+      "learning_rate": 0.0001,
+      "train_epochs": 6,
+      "patience": 100,
+      "pct_start": 0.3,
+      "lr_decay": 0.5,
+      "lradj": "step",
+      "num_workers": 1,
+      "freeze_encoder": 0,
+      "pred_lens": [
+        96
+      ]
+    }
+  },
+  "variants": [
+    {
+      "name": "pretrained",
+      "load_pretrain_weights": 1
+    }
+  ],
+  "gpu_memory_fraction": 0.9
+}

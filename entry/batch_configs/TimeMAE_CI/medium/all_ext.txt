@@ -1,0 +1,7 @@
+# TimeMAE_CI - extended horizon, 11 datasets.
+
+TimeMAE_CI/medium/light_ext
+TimeMAE_CI/medium/mid_ext
+TimeMAE_CI/medium/heavy_ext
+TimeMAE_CI/medium/pems_light_ext
+TimeMAE_CI/medium/pems_heavy_ext

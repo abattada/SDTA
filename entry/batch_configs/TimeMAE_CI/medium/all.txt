@@ -1,0 +1,7 @@
+# TimeMAE_CI - standard horizons, all 12 datasets.
+
+TimeMAE_CI/medium/light
+TimeMAE_CI/medium/mid
+TimeMAE_CI/medium/heavy
+TimeMAE_CI/medium/pems_light
+TimeMAE_CI/medium/pems_heavy

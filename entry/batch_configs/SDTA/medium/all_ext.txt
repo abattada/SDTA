@@ -1,0 +1,7 @@
+# SDTA medium (E=2, D=1) - extended horizon, 11 datasets.
+
+SDTA/medium/light_ext
+SDTA/medium/mid_ext
+SDTA/medium/heavy_ext
+SDTA/medium/pems_light_ext
+SDTA/medium/pems_heavy_ext

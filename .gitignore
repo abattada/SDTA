@@ -1,0 +1,6 @@
+# Anchored to the repository root: an unanchored `data/` would also match
+# model/PatchTST/src/data/, silently dropping that package's source files.
+/data/
+/outputs/
+__pycache__/
+*.pyc

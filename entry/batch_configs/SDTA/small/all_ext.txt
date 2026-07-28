@@ -1,0 +1,7 @@
+# SDTA small (E=1, D=1) - extended horizon, 11 datasets.
+
+SDTA/small/light_ext
+SDTA/small/mid_ext
+SDTA/small/heavy_ext
+SDTA/small/pems_light_ext
+SDTA/small/pems_heavy_ext

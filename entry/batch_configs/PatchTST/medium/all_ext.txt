@@ -1,0 +1,7 @@
+# PatchTST - extended horizon, 11 datasets.
+
+PatchTST/medium/light_ext
+PatchTST/medium/mid_ext
+PatchTST/medium/heavy_ext
+PatchTST/medium/pems_light_ext
+PatchTST/medium/pems_heavy_ext

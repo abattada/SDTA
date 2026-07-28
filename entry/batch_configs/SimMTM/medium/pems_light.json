@@ -1,0 +1,106 @@
+{
+  "_doc": "SimMTM (multi-view masked + series-wise contrastive) at the shared encoder capacity. Cohort pems_light, standard prediction lengths [12, 24, 48, 96], 5 seeds.",
+  "name": "SimMTM_medium_pems_light",
+  "model_id": "SimMTM",
+  "datasets": [
+    "PEMS03",
+    "PEMS04",
+    "PEMS08"
+  ],
+  "stages": [
+    "pretrain",
+    "train",
+    "test"
+  ],
+  "auto_enc_in": true,
+  "cuda_visible_devices": "0",
+  "min_free_mb": 4000,
+  "concurrent": 2,
+  "delay": 10,
+  "env": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "run_name": {
+    "base": "arch_scan",
+    "include": [
+      "e_layers",
+      "seed"
+    ],
+    "aliases": {
+      "e_layers": "Enc",
+      "seed": "S"
+    }
+  },
+  "grid": {
+    "pretrain.e_layers": [
+      2
+    ],
+    "seed": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "stage_defaults": {
+    "pretrain": {
+      "features": "M",
+      "input_len": 96,
+      "patch_len": 8,
+      "e_layers": 2,
+      "n_heads": 4,
+      "d_model": 32,
+      "d_ff": 64,
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "positive_nums": 3,
+      "mask_rate": 0.5,
+      "mask_distribution": "geometric",
+      "lm": 3,
+      "temperature": 0.2,
+      "select_channels": 0.1,
+      "learning_rate": 0.001,
+      "batch_size": 16,
+      "train_epochs": 50,
+      "patience": 3,
+      "num_workers": 4,
+      "checkpoint_every": 0
+    },
+    "train": {
+      "pred_lens": [
+        12,
+        24,
+        48,
+        96
+      ],
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "batch_size": 16,
+      "learning_rate": 0.0001,
+      "train_epochs": 10,
+      "patience": 3,
+      "lradj": "type1",
+      "num_workers": 2
+    },
+    "test": {
+      "pred_lens": [
+        12,
+        24,
+        48,
+        96
+      ],
+      "batch_size": 16,
+      "num_workers": 2
+    }
+  },
+  "variants": [
+    {
+      "name": "pretrained",
+      "load_pretrain_weights": 1
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "_doc": "TimeSiam with SDTA's multi-window sampler grafted on: the axis control (W=1 is TimeSiam itself). Cohort pems_heavy, extended horizon 144, 5 seeds; reuses the standard pretraining, outputs tagged _PLX.",
+  "name": "TimeSiam_W_medium_pems_heavy_ext",
+  "model_id": "TimeSiam_W",
+  "datasets": [
+    "PEMS07"
+  ],
+  "stages": [
+    "pretrain",
+    "train",
+    "test"
+  ],
+  "auto_enc_in": true,
+  "cuda_visible_devices": "0",
+  "min_free_mb": 8000,
+  "concurrent": 1,
+  "delay": 10,
+  "env": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "run_name": {
+    "base": "w_scan",
+    "include": [
+      "current_views",
+      "seed"
+    ],
+    "aliases": {
+      "current_views": "W",
+      "seed": "S"
+    }
+  },
+  "grid": {
+    "pretrain.current_views": [
+      2,
+      4
+    ],
+    "seed": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "stage_defaults": {
+    "pretrain": {
+      "device": "auto",
+      "features": "M",
+      "input_len": 96,
+      "patch_len": 8,
+      "e_layers": 2,
+      "d_layers": 1,
+      "n_heads": 4,
+      "d_model": 32,
+      "d_ff": 64,
+      "dropout": 0.2,
+      "use_norm": 1,
+      "mask_rate": 0.25,
+      "masked_rule": "channel_continuous",
+      "lm": 3,
+      "lineage_tokens": 2,
+      "current_token": 0,
+      "sampling_range": 6,
+      "current_views": 2,
+      "w_chunk_size": 0,
+      "learning_rate": 0.001,
+      "batch_size": 16,
+      "train_epochs": 50,
+      "num_workers": 4,
+      "checkpoint_every": 10,
+      "seed": 2021
+    },
+    "train": {
+      "pred_lens": [
+        144
+      ],
+      "dec_layers": 1,
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "representation_using": "avg",
+      "batch_size": 16,
+      "learning_rate": 0.0001,
+      "train_epochs": 10,
+      "patience": 3,
+      "pct_start": 0.3,
+      "lr_decay": 0.5,
+      "lradj": "step",
+      "num_workers": 4,
+      "seed": 2021
+    },
+    "test": {
+      "pred_lens": [
+        144
+      ],
+      "batch_size": 16,
+      "num_workers": 4,
+      "seed": 2021
+    }
+  },
+  "variants": [
+    {
+      "name": "ext",
+      "suffix": "PLX",
+      "load_pretrain_weights": 1
+    }
+  ]
+}

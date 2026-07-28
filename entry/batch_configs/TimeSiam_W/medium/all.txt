@@ -1,0 +1,7 @@
+# TimeSiam_W - standard horizons, all 12 datasets.
+
+TimeSiam_W/medium/light
+TimeSiam_W/medium/mid
+TimeSiam_W/medium/heavy
+TimeSiam_W/medium/pems_light
+TimeSiam_W/medium/pems_heavy

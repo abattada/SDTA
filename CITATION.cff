@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite the SDTA paper. The paper is under
+  double-blind review; author metadata will be filled in at camera-ready.
+title: >-
+  SDTA: Shifted-Window Diffusion with Temporal-Distance Attention for
+  Self-Supervised Time-Series Forecasting
+authors:
+  - name: The SDTA Authors
+type: software
+license: MIT
+repository-code: https://github.com/REPLACE-ME/SDTA
+preferred-citation:
+  type: article
+  title: >-
+    Shifted-Window Diffusion with Temporal-Distance Attention for
+    Self-Supervised Time-Series Forecasting
+  authors:
+    - name: The SDTA Authors
+  year: 2026
+  notes: Under review.

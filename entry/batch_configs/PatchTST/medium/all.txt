@@ -1,0 +1,7 @@
+# PatchTST - standard horizons, all 12 datasets.
+
+PatchTST/medium/light
+PatchTST/medium/mid
+PatchTST/medium/heavy
+PatchTST/medium/pems_light
+PatchTST/medium/pems_heavy

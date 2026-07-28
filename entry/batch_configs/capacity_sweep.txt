@@ -1,0 +1,17 @@
+# Capacity x supervision-axis grid: all three capacities, W in {1,2,4,8}.
+
+SDTA/small/light
+SDTA/small/mid
+SDTA/small/heavy
+SDTA/small/pems_light
+SDTA/small/pems_heavy
+SDTA/medium/light
+SDTA/medium/mid
+SDTA/medium/heavy
+SDTA/medium/pems_light
+SDTA/medium/pems_heavy
+SDTA/large/light
+SDTA/large/mid
+SDTA/large/heavy
+SDTA/large/pems_light
+SDTA/large/pems_heavy

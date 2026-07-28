@@ -1,0 +1,111 @@
+{
+  "_doc": "Contrastive Predictive Coding; the K sweep is this method's supervision axis. Cohort heavy, standard prediction lengths [96, 192, 336, 720], 5 seeds.",
+  "name": "CPC_medium_heavy",
+  "model_id": "CPC",
+  "datasets": [
+    "traffic"
+  ],
+  "stages": [
+    "pretrain",
+    "train",
+    "test"
+  ],
+  "auto_enc_in": true,
+  "cuda_visible_devices": "0",
+  "min_free_mb": 6000,
+  "concurrent": 1,
+  "delay": 10,
+  "env": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "run_name": {
+    "base": "arch_scan",
+    "include": [
+      "e_layers",
+      "prediction_steps",
+      "num_negatives",
+      "seed"
+    ],
+    "aliases": {
+      "e_layers": "Enc",
+      "prediction_steps": "K",
+      "num_negatives": "Neg",
+      "seed": "S"
+    }
+  },
+  "grid": {
+    "pretrain.e_layers": [
+      2
+    ],
+    "pretrain.prediction_steps": [
+      4,
+      2,
+      1
+    ],
+    "pretrain.num_negatives": [
+      64
+    ],
+    "seed": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "stage_defaults": {
+    "pretrain": {
+      "features": "M",
+      "input_len": 96,
+      "patch_len": 8,
+      "e_layers": 2,
+      "n_heads": 4,
+      "d_model": 32,
+      "d_ff": 64,
+      "dropout": 0.2,
+      "prediction_steps": 4,
+      "num_negatives": 64,
+      "learning_rate": 0.001,
+      "batch_size": 16,
+      "train_epochs": 50,
+      "patience": 3,
+      "num_workers": 1,
+      "checkpoint_every": 0
+    },
+    "train": {
+      "pred_lens": [
+        96,
+        192,
+        336,
+        720
+      ],
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "batch_size": 16,
+      "learning_rate": 0.0001,
+      "train_epochs": 10,
+      "patience": 3,
+      "lradj": "type1",
+      "num_workers": 1
+    },
+    "test": {
+      "pred_lens": [
+        96,
+        192,
+        336,
+        720
+      ],
+      "batch_size": 16,
+      "num_workers": 1
+    }
+  },
+  "variants": [
+    {
+      "name": "pretrained",
+      "load_pretrain_weights": 1
+    }
+  ]
+}

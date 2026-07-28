@@ -1,0 +1,7 @@
+# SDTA medium (E=2, D=1) - standard horizons, W sweep, all 12 datasets.
+
+SDTA/medium/light
+SDTA/medium/mid
+SDTA/medium/heavy
+SDTA/medium/pems_light
+SDTA/medium/pems_heavy

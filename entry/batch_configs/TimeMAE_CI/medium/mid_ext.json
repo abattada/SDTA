@@ -1,0 +1,98 @@
+{
+  "_doc": "TimeMAE, channel-independent variant, at the shared encoder capacity. Cohort mid, extended horizon 1080, 5 seeds; reuses the standard pretraining, outputs tagged _PLX.",
+  "name": "TimeMAE_CI_medium_mid_ext",
+  "model_id": "TimeMAE_CI",
+  "datasets": [
+    "electricity"
+  ],
+  "stages": [
+    "pretrain",
+    "train",
+    "test"
+  ],
+  "auto_enc_in": true,
+  "cuda_visible_devices": "0",
+  "min_free_mb": 4000,
+  "concurrent": 2,
+  "delay": 10,
+  "env": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "run_name": {
+    "base": "arch_scan",
+    "include": [
+      "e_layers",
+      "seed"
+    ],
+    "aliases": {
+      "e_layers": "Enc",
+      "seed": "S"
+    }
+  },
+  "grid": {
+    "pretrain.e_layers": [
+      2
+    ],
+    "seed": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "stage_defaults": {
+    "pretrain": {
+      "features": "M",
+      "input_len": 96,
+      "patch_len": 8,
+      "e_layers": 2,
+      "n_heads": 4,
+      "d_model": 32,
+      "d_ff": 64,
+      "dropout": 0.2,
+      "mask_ratio": 0.6,
+      "vocab_size": 192,
+      "reg_layers": 1,
+      "momentum": 0.99,
+      "alpha": 5.0,
+      "beta": 1.0,
+      "learning_rate": 0.001,
+      "batch_size": 16,
+      "train_epochs": 50,
+      "patience": 3,
+      "num_workers": 4,
+      "checkpoint_every": 0
+    },
+    "train": {
+      "pred_lens": [
+        1080
+      ],
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "batch_size": 16,
+      "learning_rate": 0.0001,
+      "train_epochs": 10,
+      "patience": 3,
+      "lradj": "type1",
+      "num_workers": 2
+    },
+    "test": {
+      "pred_lens": [
+        1080
+      ],
+      "batch_size": 16,
+      "num_workers": 2
+    }
+  },
+  "variants": [
+    {
+      "name": "ext",
+      "suffix": "PLX",
+      "load_pretrain_weights": 1
+    }
+  ]
+}

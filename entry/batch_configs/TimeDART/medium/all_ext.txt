@@ -1,0 +1,7 @@
+# TimeDART - extended horizon, 11 datasets.
+
+TimeDART/medium/light_ext
+TimeDART/medium/mid_ext
+TimeDART/medium/heavy_ext
+TimeDART/medium/pems_light_ext
+TimeDART/medium/pems_heavy_ext

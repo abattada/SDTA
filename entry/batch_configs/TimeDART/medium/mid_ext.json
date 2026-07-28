@@ -1,0 +1,107 @@
+{
+  "_doc": "TimeDART (single-window diffusion) at the shared encoder capacity. Cohort mid, extended horizon 1080, 5 seeds; reuses the standard pretraining, outputs tagged _PLX.",
+  "name": "TimeDART_medium_mid_ext",
+  "model_id": "TimeDART",
+  "datasets": [
+    "electricity"
+  ],
+  "stages": [
+    "pretrain",
+    "train",
+    "test"
+  ],
+  "auto_enc_in": true,
+  "cuda_visible_devices": "0",
+  "min_free_mb": 4000,
+  "concurrent": 2,
+  "delay": 10,
+  "env": {
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4",
+    "OPENBLAS_NUM_THREADS": "4",
+    "NUMEXPR_NUM_THREADS": "4"
+  },
+  "run_name": {
+    "base": "arch_scan",
+    "include": [
+      "e_layers",
+      "d_layers",
+      "seed"
+    ],
+    "aliases": {
+      "e_layers": "Enc",
+      "d_layers": "Dec",
+      "seed": "S"
+    }
+  },
+  "grid": {
+    "pretrain.e_layers": [
+      2
+    ],
+    "pretrain.d_layers": [
+      1
+    ],
+    "seed": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "stage_defaults": {
+    "pretrain": {
+      "device": "auto",
+      "features": "M",
+      "input_len": 96,
+      "patch_len": 8,
+      "batch_size": 16,
+      "train_epochs": 50,
+      "d_model": 32,
+      "n_heads": 4,
+      "e_layers": 2,
+      "d_layers": 1,
+      "d_ff": 64,
+      "time_steps": 1000,
+      "use_norm": 1,
+      "scheduler": "cosine",
+      "num_workers": 4,
+      "checkpoint_every": 10,
+      "learning_rate": 0.001,
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "lr_decay": 0.9,
+      "mask_ratio": 1.0
+    },
+    "train": {
+      "pred_lens": [
+        1080
+      ],
+      "dec_layers": 1,
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "batch_size": 16,
+      "learning_rate": 0.0001,
+      "train_epochs": 10,
+      "patience": 3,
+      "pct_start": 0.3,
+      "lr_decay": 0.5,
+      "lradj": "step",
+      "num_workers": 2
+    },
+    "test": {
+      "pred_lens": [
+        1080
+      ],
+      "batch_size": 16,
+      "num_workers": 2
+    }
+  },
+  "variants": [
+    {
+      "name": "ext",
+      "suffix": "PLX",
+      "load_pretrain_weights": 1
+    }
+  ]
+}

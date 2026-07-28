@@ -1,0 +1,7 @@
+# SimTS - extended horizon, 11 datasets.
+
+SimTS/medium/light_ext
+SimTS/medium/mid_ext
+SimTS/medium/heavy_ext
+SimTS/medium/pems_light_ext
+SimTS/medium/pems_heavy_ext

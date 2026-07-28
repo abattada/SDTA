@@ -1,0 +1,18 @@
+# Tested environment: Ubuntu 22.04.5, Python 3.11.14, CUDA 12.4 wheels,
+# single NVIDIA RTX 4090 (24 GB), driver 550.144.03.
+# Python >= 3.11 is required (entry/batch.py uses datetime.UTC).
+#
+# Install PyTorch first with the CUDA build matching your system, e.g.:
+#   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu124
+
+torch==2.5.1
+numpy==2.4.2
+
+# Used only by the PatchTST-SSL baseline (model/PatchTST/):
+pandas==3.0.1
+scikit-learn==1.9.0
+tqdm==4.67.3
+
+# Optional: faster in-process GPU memory queries for the batch scheduler
+# (entry/batch_src/scheduler.py falls back to `nvidia-smi` without it).
+# nvidia-ml-py>=12.0

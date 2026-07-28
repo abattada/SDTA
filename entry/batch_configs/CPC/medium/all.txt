@@ -1,0 +1,7 @@
+# CPC - standard horizons, all 12 datasets.
+
+CPC/medium/light
+CPC/medium/mid
+CPC/medium/heavy
+CPC/medium/pems_light
+CPC/medium/pems_heavy

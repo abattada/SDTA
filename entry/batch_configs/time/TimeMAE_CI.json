@@ -1,0 +1,84 @@
+{
+  "_doc": "TIMING run for TimeMAE_CI (TimeMAE_CI). 6-epoch pretrain+train on a channel ladder, seed 97, num_workers=1, fully serial (concurrent=1). Drop epoch1, average epochs 2..6 of elapsed_sec per stage.",
+  "name": "time_TimeMAE_CI",
+  "model_id": "TimeMAE_CI",
+  "datasets": [
+    "ETTh1",
+    "weather",
+    "PEMS08",
+    "electricity",
+    "PEMS07"
+  ],
+  "stages": [
+    "pretrain",
+    "train"
+  ],
+  "auto_enc_in": true,
+  "cuda_visible_devices": "0",
+  "min_free_mb": 1000,
+  "concurrent": 1,
+  "env": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "run_name": {
+    "base": "time",
+    "include": [
+      "seed"
+    ],
+    "aliases": {
+      "seed": "S"
+    }
+  },
+  "grid": {
+    "seed": [
+      97
+    ]
+  },
+  "stage_defaults": {
+    "pretrain": {
+      "features": "M",
+      "input_len": 96,
+      "patch_len": 8,
+      "e_layers": 2,
+      "n_heads": 4,
+      "d_model": 32,
+      "d_ff": 64,
+      "dropout": 0.2,
+      "mask_ratio": 0.6,
+      "vocab_size": 192,
+      "reg_layers": 1,
+      "momentum": 0.99,
+      "alpha": 5.0,
+      "beta": 1.0,
+      "learning_rate": 0.001,
+      "batch_size": 16,
+      "train_epochs": 6,
+      "patience": 100,
+      "num_workers": 1,
+      "checkpoint_every": 0
+    },
+    "train": {
+      "dropout": 0.2,
+      "head_dropout": 0.1,
+      "batch_size": 16,
+      "learning_rate": 0.0001,
+      "train_epochs": 6,
+      "patience": 100,
+      "lradj": "type1",
+      "num_workers": 1,
+      "pred_lens": [
+        96
+      ]
+    }
+  },
+  "variants": [
+    {
+      "name": "pretrained",
+      "load_pretrain_weights": 1
+    }
+  ],
+  "gpu_memory_fraction": 0.9
+}

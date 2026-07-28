@@ -1,0 +1,7 @@
+# TimeSiam_W - extended horizon, 11 datasets.
+
+TimeSiam_W/medium/light_ext
+TimeSiam_W/medium/mid_ext
+TimeSiam_W/medium/heavy_ext
+TimeSiam_W/medium/pems_light_ext
+TimeSiam_W/medium/pems_heavy_ext

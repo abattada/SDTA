@@ -1,0 +1,7 @@
+# SDTA large (E=2, D=2) - standard horizons, W sweep, all 12 datasets.
+
+SDTA/large/light
+SDTA/large/mid
+SDTA/large/heavy
+SDTA/large/pems_light
+SDTA/large/pems_heavy

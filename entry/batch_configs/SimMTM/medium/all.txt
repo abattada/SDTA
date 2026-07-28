@@ -1,0 +1,7 @@
+# SimMTM - standard horizons, all 12 datasets.
+
+SimMTM/medium/light
+SimMTM/medium/mid
+SimMTM/medium/heavy
+SimMTM/medium/pems_light
+SimMTM/medium/pems_heavy
