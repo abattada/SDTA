@@ -13,6 +13,9 @@ pandas==3.0.1
 scikit-learn==1.9.0
 tqdm==4.67.3
 
+# Used only by scripts/significance_test.py (Friedman / Wilcoxon signed-rank):
+scipy==1.17.1
+
 # Optional: faster in-process GPU memory queries for the batch scheduler
 # (entry/batch_src/scheduler.py falls back to `nvidia-smi` without it).
 # nvidia-ml-py>=12.0

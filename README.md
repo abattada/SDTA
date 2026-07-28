@@ -135,7 +135,15 @@ python scripts/aggregate_results.py --extended # extended-horizon table
 python scripts/aggregate_results.py --sdta-w 2 # SDTA at W=2
 python scripts/epoch_time.py --contains time_  # wall-clock (drop epoch 1)
 python scripts/count_params.py                 # verify the paper's parameter counts
+python scripts/significance_test.py            # Friedman + Wilcoxon (paper's significance table)
 ```
+
+`significance_test.py` reproduces the paper's statistical tests from the same
+`results.json` files, so it re-runs nothing: a Friedman omnibus over the eight
+methods, two-sided Wilcoxon signed-rank of SDTA against each baseline with
+Holm correction (one paired observation per dataset, following Demšar 2006),
+and the same test applied to each method's own supervision axis. It needs
+`scipy`, which is in `requirements.txt`.
 
 The standard tables use only the canonical four prediction lengths
 ({96,192,336,720} non-PEMS, {12,24,48,96} PEMS); the script enforces this.
