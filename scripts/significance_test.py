@@ -11,8 +11,9 @@ paper's main table reports.
   * One-versus-all: two-sided Wilcoxon signed-rank of SDTA against each of the
     7 baselines (exact test at these sample sizes), with Holm correction over
     the 7 comparisons.
-  * Supervision axis: two-sided Wilcoxon of W=1 against W=4 for SDTA, and of
-    each baseline's own feasible axis at its two extreme values.
+  * Supervision axis: two-sided Wilcoxon of SDTA's W ladder (1 vs 4, and the
+    single steps 1->2, 2->4, 4->8), and of each baseline's own feasible axis at
+    its two extreme values. Any other pair is one --axis-pair away.
 
 Nothing here re-runs an experiment; it reads the same
 `outputs/test/**/results.json` files that `aggregate_results.py` reads, so the
@@ -22,6 +23,13 @@ Usage (from the repository root, after the experiments have been run):
     python scripts/significance_test.py                 # all tests, MSE + MAE
     python scripts/significance_test.py --metric mse    # MSE only
     python scripts/significance_test.py --csv sig.csv   # also dump a CSV
+
+Any pair that is not in the built-in axis set can be tested with --axis-pair,
+the axis counterpart of aggregate_results.py's --pattern; docs/paper_code_map.md
+lists the run-name template of every paper table. The label may not contain '='
+and the templates may not contain ','. Example (Small capacity, W=1 vs W=8):
+    python scripts/significance_test.py --axis-pair \
+      'SDTA-Small-W1-W8=SDTA:arch_scan_Enc_1_Dec_1_Mask_0p5_SMax_12_Lmlp_1_W_1_S_{s},SDTA:arch_scan_Enc_1_Dec_1_Mask_0p5_SMax_12_Lmlp_1_W_8_S_{s}'
 
 Requires scipy (>=1.9) and numpy; both are in requirements.txt.
 """
@@ -62,9 +70,17 @@ METHODS = {
 CONTROL = "SDTA"
 
 # Supervision-axis pairs: (label, low-arm, high-arm) with arms as (dir, tpl).
+# SDTA gets the full W ladder: the 1-vs-4 span the paper headlines, plus every
+# single step, so each rung of the W table has its own test.
 AXIS_PAIRS = [
     ("SDTA  W=1 vs W=4",
      ("SDTA", SDTA_TPL.format(W=1)), ("SDTA", SDTA_TPL.format(W=4))),
+    ("SDTA  W=1 vs W=2",
+     ("SDTA", SDTA_TPL.format(W=1)), ("SDTA", SDTA_TPL.format(W=2))),
+    ("SDTA  W=2 vs W=4",
+     ("SDTA", SDTA_TPL.format(W=2)), ("SDTA", SDTA_TPL.format(W=4))),
+    ("SDTA  W=4 vs W=8",
+     ("SDTA", SDTA_TPL.format(W=4)), ("SDTA", SDTA_TPL.format(W=8))),
     ("TimeSiam W=1 vs W=4",
      ("TimeSiam", "arch_scan_Enc_2_Dec_1_S_{s}"), ("TimeSiam_W", "w_scan_W_4_S_{s}")),
     ("CPC   K=1 vs K=4",
@@ -223,10 +239,32 @@ def main() -> int:
     ap.add_argument("--skip-extended", action="store_true",
                     help="only test the standard horizons")
     ap.add_argument("--csv", type=Path, default=None, help="write all results to CSV")
+    ap.add_argument("--axis-pair", action="append", default=None,
+                    metavar="LABEL=DIR:TPL_LOW,DIR:TPL_HIGH",
+                    help="test custom low-vs-high pairs instead of the built-in axes; "
+                         "repeatable. Both templates use {s} for the seed, e.g. "
+                         "'SDTA-W2-W8=SDTA:arch_scan_Enc_2_Dec_1_Mask_0p5_SMax_12_Lmlp_1_W_2_S_{s},"
+                         "SDTA:arch_scan_Enc_2_Dec_1_Mask_0p5_SMax_12_Lmlp_1_W_8_S_{s}' "
+                         "(see docs/paper_code_map.md for every table's run templates)")
     ap.add_argument("--dir-alias", action="append", default=None, metavar="NAME=DIR",
                     help="rename a method's outputs/test directory, e.g. SDTA=SDTA_v10; "
                          "only needed when outputs/ came from a differently-named tree")
     args = ap.parse_args()
+
+    if args.axis_pair:
+        pairs = []
+        for spec in args.axis_pair:
+            try:
+                label, rest = spec.split("=", 1)
+                lo_spec, hi_spec = rest.split(",", 1)
+                lo_dir, lo_tpl = lo_spec.split(":", 1)
+                hi_dir, hi_tpl = hi_spec.split(":", 1)
+            except ValueError:
+                print(f"bad --axis-pair {spec!r}; expected "
+                      "LABEL=DIR:TPL_LOW,DIR:TPL_HIGH", file=sys.stderr)
+                return 2
+            pairs.append((label, (lo_dir, lo_tpl), (hi_dir, hi_tpl)))
+        AXIS_PAIRS[:] = pairs
 
     for spec in args.dir_alias or []:
         name, _, newdir = spec.partition("=")

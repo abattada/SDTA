@@ -129,6 +129,13 @@ def main() -> int:
     ap.add_argument("--per-horizon", action="store_true",
                     help="also print per-pred_len cross-seed means")
     ap.add_argument("--std", action="store_true", help="show cross-seed std")
+    ap.add_argument("--seeds", nargs="+", type=int, default=None, metavar="SEED",
+                    help="override the seed list (default 2021 2022 2023 2024 2025). "
+                         "Needed for sub-sweeps run at a different seed budget: the "
+                         "s_max sweep is 3 seeds, so pass --seeds 2021 2022 2023. "
+                         "Without it the s_max=12 cells would be averaged over five "
+                         "seeds and the s_max=18/24 cells over three, which is not a "
+                         "matched comparison.")
     ap.add_argument("--pattern", action="append", default=None, metavar="LABEL=DIR:RUN_TPL",
                     help="aggregate a custom run instead of the built-in methods; "
                          "repeatable. RUN_TPL uses {s} for the seed, e.g. "
@@ -138,6 +145,10 @@ def main() -> int:
                     help="override the outputs/test pre_* directory tag; use 'no_pretrain' "
                          "for the random-init ablation")
     args = ap.parse_args()
+
+    global SEEDS
+    if args.seeds:
+        SEEDS = list(args.seeds)
 
     if args.pattern:
         registry = {}
