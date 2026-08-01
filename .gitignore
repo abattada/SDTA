@@ -4,3 +4,6 @@
 /outputs/
 __pycache__/
 *.pyc
+
+# Build product of scripts/make_code_appendix.sh (never committed).
+/code_appendix.zip

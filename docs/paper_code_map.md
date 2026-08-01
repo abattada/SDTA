@@ -42,22 +42,27 @@ All flags belong to `python -m model.SDTA.pretrain` unless noted.
 | no forced s=1 target | `no_forced_s1` | `--forced_first_shift_one 0` |
 | K=V (code on keys and values) | `k=v` | `--kv_share_lineage 1` |
 
-The distance-only sinusoidal broadcast code used in the shift-invariance
-analysis is `--lineage_type sinusoidal`.
+`--lineage_type sinusoidal` selects a third, distance-only broadcast code. It is
+an available option in the code, not a reported experiment: the paper's
+shift-invariance argument about such a code is analytical, and no table, config,
+or run in this repository uses this flag.
 
 ## Paper tables ↔ configs
 
 Run a config with `python entry/batch.py <name>`; run a queue list with
 `python entry/batch_queue.py --list <file>`. Every performance config pins
-seeds 2021–2025 (5 chains per setting).
+seeds 2021–2025 (5 chains per setting); the one exception is the s_max sweep,
+which the supplement reports over three seeds (2021–2023).
 
 | Paper table | Configs / queue list |
 |---|---|
 | Main results (8 methods, 12 datasets) | `main_table.txt` — SDTA at `SDTA/medium/*` (take W=4) plus `{TimeMAE_CI,TimeDART,TimeSiam,SimMTM,PatchTST,CPC,SimTS}/medium/*` |
 | W sweep (W ∈ {1,2,4,8} × Small/Medium/Large) | `capacity_sweep.txt` — `SDTA/{small,medium,large}/*` (each config sweeps all four W) |
 | Baseline supervision axes (TimeSiam W, CPC K) | `TimeSiam_W/medium/*` (W ∈ {2,4}; W=1 is the TimeSiam main-table entry), `CPC/medium/*` (K ∈ {4,2,1}) |
-| Extended horizon (1080 / 144) | `extended.txt` — every `*_ext` config, 11 datasets |
+| s_max sweep (supplement) | `SDTA/medium/smax_sweep/light` — s_max ∈ {12,18,24} × W ∈ {2,4,8}, 3 seeds, the six `light` datasets |
+| Extended horizon (1080 / 144) | `extended.txt` — the Medium `*_ext` configs for SDTA and all seven baselines, 11 datasets. The Small and Large `*_ext` sweeps used for the extended panel of the capacity figure are `SDTA/{small,large}/all_ext.txt`, which `extended.txt` does not include |
 | Ablations | `SDTA/medium/ablation/all.txt` (all eight arms); small/large equivalents under `SDTA/{small,large}/ablation/` |
+| Extended-horizon ablations | `SDTA/medium/ablation/all_ext.txt` — only the `no_tda` and `k=v` arms were run at 1080 / 144; the default arm they are compared against is the W=4 row of `extended.txt` |
 | Peak pretraining VRAM | `time/*.json` + `scripts/vram_probe/` (peak *allocated* MiB, `torch.cuda.max_memory_allocated`, 2-epoch probe) |
 | Wall-clock cost | `time/list.txt` (6 epochs, seed 97, serial, one GPU) + `scripts/epoch_time.py` (drop epoch 1, average the rest) |
 | Transferred/head parameter counts | `scripts/count_params.py` |
@@ -71,6 +76,7 @@ every other table is one `--pattern 'LABEL=MODEL_DIR:RUN_TPL'` invocation away
 | Runs | MODEL_DIR : RUN_TPL |
 |---|---|
 | SDTA capacity (E,D) at window W | `SDTA:arch_scan_Enc_{E}_Dec_{D}_Mask_0p5_SMax_12_Lmlp_1_W_{W}_S_{s}` — (E,D) ∈ {(1,1) Small, (2,1) Medium, (2,2) Large}, W ∈ {1,2,4,8} |
+| SDTA s_max sweep at window W | `SDTA:arch_scan_Enc_2_Dec_1_Mask_0p5_SMax_{smax}_Lmlp_1_W_{W}_S_{s}` — s_max ∈ {12,18,24}, W ∈ {2,4,8}, seeds 2021–2023 only; (weather, W=8) has no run at s_max 18 or 24. **Pass `--seeds 2021 2022 2023`**: the s_max=12 cells are also part of the 5-seed main grid, so without the override those cells average five seeds while s_max=18/24 average three, which is not a matched comparison and does not reproduce the supplement's table |
 | TimeSiam_W at W ∈ {2,4} | `TimeSiam_W:w_scan_W_{W}_S_{s}` (W=1 anchor = the TimeSiam main-table entry) |
 | CPC at K ∈ {1,2,4} | `CPC:arch_scan_Enc_2_K_{K}_Neg_64_S_{s}` |
 | no temporal-distance attention | `SDTA:arch_scan_Enc_2_Dec_1_Mask_0p5_NoLin_1_SMax_12_Lmlp_1_W_4_S_{s}` |
@@ -82,6 +88,7 @@ every other table is one `--pattern 'LABEL=MODEL_DIR:RUN_TPL'` invocation away
 | linear probe | `SDTA:arch_scan_Enc_2_Dec_1_Mask_0p5_SMax_12_Lmlp_1_W_4_S_{s}_Probe_1` |
 | random init | same template as the standard runs, plus `--pre-tag no_pretrain` |
 | extended horizon | same template as the standard runs with `_PLX` appended; `--extended` handles this automatically |
+| extended-horizon ablation arms | the `no temporal-distance attention` and `K=V code sharing` templates above, with `--extended` |
 
 ## One fixed configuration (paper Section: benchmark)
 

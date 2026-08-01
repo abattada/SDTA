@@ -56,8 +56,18 @@ short. Metrics are computed on the standardized scale (no inverse transform).
 
 ## Licenses and citations
 
+This repository redistributes **no data at all** — no raw file, no derived
+window store, no cached tensor. It ships only download code (`download/`) and
+preprocessing code (`data_preprocess/`); every byte of data is fetched by the
+user from the original public source and transformed locally. Each dataset
+therefore reaches the user under its own license, direct from its own host, and
+nothing here constitutes redistribution of a dataset.
+
 - **ETT**: CC BY-ND 4.0 (see the ETDataset repository). Cite Informer
-  (Zhou et al., AAAI 2021).
+  (Zhou et al., AAAI 2021). The **ND** (NoDerivatives) term is why the
+  preprocessed window store is never shipped: `data_preprocess/` writes it into
+  the gitignored `data/` directory on the user's own machine, and the release
+  contains neither the original CSVs nor any derivative of them.
 - **electricity / weather / traffic / exchange_rate**: underlying sources are
   public — UCI ElectricityLoadDiagrams20112014, the MPI-BGC Jena weather
   station, Caltrans PeMS, and the LSTNet exchange-rate collection

@@ -19,6 +19,33 @@ comparison against 7 self-supervised baselines, the supervision-axis
 ($W$) sweeps, the extended-horizon stress test, all 8 ablation arms, and the
 wall-clock/VRAM cost analysis.
 
+## Building the code appendix
+
+**Do not zip this directory.** It is a live git repository: `.git/` carries the
+commit history with its author identity and remote URL, and the gitignored
+`data/` and `outputs/` trees add hundreds of megabytes. Build the archive with
+
+```bash
+./scripts/make_code_appendix.sh            # -> code_appendix.zip
+```
+
+The script copies exactly the files git tracks or would offer to track
+(`git ls-files --cached --others --exclude-standard`), taken from the **working
+tree**, so the archive always matches what is on disk — uncommitted fixes and
+not-yet-added files included — while `.gitignore` keeps `data/`, `outputs/` and
+`__pycache__` out and `.git` is never reached. The script also excludes itself:
+it is packaging tooling, not paper implementation, and it has to spell the
+deanonymizing strings out in order to scan for them.
+
+It then unzips its own output and verifies it, failing closed on any of: a
+`.git` directory, `__pycache__`, `.pyc`, a `data/` or `outputs/` tree, CJK text
+in file contents, a deanonymizing or non-ASCII **path name**, or a deanonymizing
+string anywhere in the contents (GitHub URLs outside the third-party attribution
+list, author names, e-mail addresses, absolute home paths). Contents are scanned
+as text even inside binary files. It exits non-zero and deletes the archive if
+any check fails, so a failed run cannot leave a publishable-looking file
+behind.
+
 ## Results at a glance
 
 12-dataset average MSE, one fixed configuration, identical encoder capacity,
@@ -68,6 +95,7 @@ entry/
 download/               dataset downloaders
 data_preprocess/        raw -> data/fine training store
 scripts/                result aggregation, timing analysis, VRAM probe, param counts
+  make_code_appendix.sh   build + verify the anonymous submission archive
 ```
 
 Key documents:
@@ -99,8 +127,10 @@ E2D2) and dataset cohort; `medium` with `W=4` is the paper's default.
 | Main results (8 methods) | `python entry/batch_queue.py --list main_table.txt` |
 | W sweep / capacity grid | `python entry/batch_queue.py --list capacity_sweep.txt` |
 | Baseline axis sweeps | `TimeSiam_W/medium/*` (W ∈ {2,4}), `CPC/medium/*` (K ∈ {1,2,4}) |
+| s_max sweep (supplement) | `python entry/batch.py SDTA/medium/smax_sweep/light` |
 | Extended horizon | `python entry/batch_queue.py --list extended.txt` |
 | Ablations (8 arms) | `python entry/batch_queue.py --list SDTA/medium/ablation/all.txt` |
+| Extended-horizon ablations (2 arms) | `python entry/batch_queue.py --list SDTA/medium/ablation/all_ext.txt` |
 | Cost (time + VRAM) | `python entry/batch_queue.py --list time/list.txt --concurrent 1 --delay 0 --config-delay 0` |
 
 Cohort naming throughout `entry/batch_configs/`: `light` = the 6 small
@@ -118,7 +148,12 @@ Notes:
   never contaminated by the long horizon. `_ext` configs reuse the standard
   pretraining (they resume-skip it) and tag their outputs `_PLX`.
 - Performance configs run 5 seeds (2021–2025) per setting: every number in
-  the paper is a 5-seed average. Timing configs use a single seed (97).
+  the paper is a 5-seed average. Timing configs use a single seed (97). The
+  s_max sweep is the one exception, 3 seeds (2021–2023) on 6 datasets, as its
+  supplement table states; do not read its cells against the 5-seed numbers.
+- Only two ablation arms were run at the extended horizon, `no_tda` and `k=v`;
+  the third row of that table is the default configuration from `extended.txt`.
+  The other six arms exist at the standard horizon only.
 - After each non-dry batch, the runner appends one summary row to
   `docs/batch/runs.md` inside the repository (an in-repo run ledger; created
   on first use).
@@ -137,6 +172,13 @@ python scripts/epoch_time.py --contains time_  # wall-clock (drop epoch 1)
 python scripts/count_params.py                 # verify the paper's parameter counts
 python scripts/significance_test.py            # Friedman + Wilcoxon (paper's significance table)
 ```
+
+`significance_test.py` takes `--axis-pair LABEL=DIR:TPL_LOW,DIR:TPL_HIGH` to test
+any supervision-axis step beyond the built-in ladder, and `epoch_time.py` adds a
+`source` column (`elapsed_sec` or `mm:ss`) recording how each row's timing was
+read, since PatchTST-SSL logs only whole seconds. `aggregate_results.py` takes
+`--seeds` for sub-sweeps run at a different seed budget; the s_max sweep needs
+`--seeds 2021 2022 2023`.
 
 `significance_test.py` reproduces the paper's statistical tests from the same
 `results.json` files, so it re-runs nothing: a Friedman omnibus over the eight
@@ -157,11 +199,41 @@ python scripts/aggregate_results.py --pre-tag no_pretrain --pattern \
   'random-init=SDTA:arch_scan_Enc_2_Dec_1_Mask_0p5_SMax_12_Lmlp_1_W_4_S_{s}'
 ```
 
-Peak-VRAM measurement (paper's memory table; see `scripts/vram_probe/`):
+Peak-VRAM measurement (paper's memory table; see `scripts/vram_probe/`). The
+command below is the table's SDTA row at capacity Medium, `W=4`, on the widest
+dataset (PEMS07, 883 channels); two epochs are enough for the peak to settle,
+and the probe prints `[vram_probe] device 0: peak allocated ... MiB` on exit:
 
 ```bash
-PYTHONPATH=scripts/vram_probe python -u -m model.SDTA.pretrain ... --train_epochs 2
+PYTHONPATH=scripts/vram_probe python -u -m model.SDTA.pretrain \
+  --dataset PEMS07 --enc_in 883 --model_id SDTA --run_name vram_S_97 \
+  --device auto --features M --input_len 96 --patch_len 8 --stride 8 \
+  --batch_size 16 --train_epochs 2 --d_model 32 --n_heads 4 --d_ff 64 \
+  --time_steps 1000 --diffusion_space patch --sampling_min 1 --sampling_max 12 \
+  --use_norm 1 --scheduler cosine --pretrain_causal 1 --num_workers 1 \
+  --w_chunk_size 0 --checkpoint_every 10 --learning_rate 0.001 --dropout 0.2 \
+  --head_dropout 0.1 --lr_decay 0.9 --e_layers 2 --d_layers 1 --mask_ratio 0.5 \
+  --lineage_mlp_layers 1 --current_views 4 --lineage_type relative \
+  --kv_share_lineage 0 --forced_first_shift_one 1 --lineage_disabled 0 \
+  --diffusion_noise_disabled 0 --past_disabled 0 --seed 97
 ```
+
+Every flag after `--dataset` is `entry/batch_configs/time/SDTA_E2_D1.json`
+read out loud: its `stage_defaults.pretrain` block is that flag list one for
+one, `grid` pins the swept flags (`--e_layers`, `--d_layers`,
+`--current_views`, `--seed`), and `auto_enc_in` supplies `--enc_in` per dataset
+(ETTh1 7, weather 21, PEMS08 170, electricity 321, PEMS07 883). The other rows
+of the memory table are the same recipe over the other `time/*.json` configs,
+so print their commands rather than transcribing them:
+
+```bash
+python entry/batch.py time/TimeSiam --dry-run   # any entry/batch_configs/time/*.json
+```
+
+Each `cmd:` line is one complete stage invocation. Take the pretrain line for
+the dataset you want, prefix it with `PYTHONPATH=scripts/vram_probe`, and lower
+`--train_epochs` to 2; `--run_name` only names the output directory, so change
+it (as above) to keep the probe out of the timing run's outputs.
 
 ## Environment
 
@@ -200,6 +272,10 @@ camera-ready (see also [CITATION.cff](CITATION.cff)):
 
 ## License
 
-MIT (see [LICENSE](LICENSE)). Baseline re-implementations follow their
-original papers; see [THIRD_PARTY.md](THIRD_PARTY.md) for code attributions
-and dataset licenses.
+MIT (see [LICENSE](LICENSE)). One exception: `model/PatchTST/src/` is vendored
+from the official PatchTST implementation and remains under Apache License 2.0,
+a complete copy of which is included at
+[LICENSE-Apache-2.0](LICENSE-Apache-2.0); each of those files carries a
+provenance header. Baseline re-implementations follow their original papers;
+see [THIRD_PARTY.md](THIRD_PARTY.md) for code attributions (including RevIN,
+vendored transitively via PatchTST) and dataset licenses.

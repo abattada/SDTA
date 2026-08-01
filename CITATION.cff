@@ -9,7 +9,6 @@ authors:
   - name: The SDTA Authors
 type: software
 license: MIT
-repository-code: https://github.com/REPLACE-ME/SDTA
 preferred-citation:
   type: article
   title: >-
