@@ -1,5 +1,5 @@
 {
-  "_doc": "TIMING run for SDTA (SDTA_E2_D2). 6-epoch pretrain+train on a channel ladder, seed 97, num_workers=1. NOTE: §C 的 W=2 並行數據由 one-chain-per-GPU orchestrator 產生（patch W=4 manifest 成 current_views=2、pin 每卡一 chain）,非直接跑此 config;此 config 若以 batch.py 直跑為序列(concurrent=1, GPU0)、數值相同. Drop epoch1, average epochs 2..6 of elapsed_sec per stage. [W=2 variant]",
+  "_doc": "TIMING run for SDTA (SDTA_E2_D2). 6-epoch pretrain+train on a channel ladder, seed 97, num_workers=1. NOTE: the parallel W=2 numbers in §C were produced by a one-chain-per-GPU orchestrator (it patched a W=4 manifest into current_views=2 and pinned one chain per GPU), not by running this config directly; running this config with batch.py is serial (concurrent=1, GPU0) and yields the same numbers. Drop epoch1, average epochs 2..6 of elapsed_sec per stage. [W=2 variant]",
   "name": "time_SDTA_E2_D2_W2",
   "model_id": "SDTA",
   "datasets": [

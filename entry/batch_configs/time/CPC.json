@@ -1,5 +1,5 @@
 {
-  "_doc": "TIMING run for CPC (CPC). 6-epoch pretrain+train on a channel ladder, seed 97, num_workers=1, fully serial (concurrent=1). Drop epoch1, average epochs 2..6 of elapsed_sec per stage. K=1 (prediction_steps=1) — CPC's best/standard K per docs/models/CPC/2026-06-29 (the K=4 used in the 2026-06-28 timing doc was wrong for the cost table).",
+  "_doc": "TIMING run for CPC (CPC). 6-epoch pretrain+train on a channel ladder, seed 97, num_workers=1, fully serial (concurrent=1). Drop epoch1, average epochs 2..6 of elapsed_sec per stage. K=1 (prediction_steps=1) — the same K as CPC's main-table entry (run template arch_scan_Enc_2_K_1_Neg_64_S_{s}), so the cost table times the configuration whose accuracy the paper reports.",
   "name": "time_CPC",
   "model_id": "CPC",
   "datasets": [

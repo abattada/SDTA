@@ -18,7 +18,9 @@ SDTA/{small,medium,large}/            capacity: small = E1D1, medium = E2D1, lar
   {cohort}_ext.json                   the single extended horizon (1080 / 144 for PEMS)
   all.txt  all_ext.txt                queue lists for the five cohorts
   ablation/{arm}/{cohort}.json        one ablation arm, at the default window W=4
-  ablation/all.txt                    queue list for all eight arms
+  ablation/{arm}/{cohort}_ext.json    the two arms that were also run at the extended horizon
+  ablation/all.txt  ablation/all_ext.txt   queue lists for all eight arms / the two extended ones
+  smax_sweep/{cohort}.json            shift-bound sweep s_max in {12,18,24} (medium only)
 {baseline}/medium/                    baselines run at the shared encoder capacity (E=2)
   {cohort}.json  {cohort}_ext.json  all.txt  all_ext.txt
 time/                                 wall-clock and VRAM cost measurement (single seed 97)
@@ -62,6 +64,25 @@ internal names.
 
 The paper's ablation table reports the **medium** capacity; the same arms are
 provided at small and large so the grid is complete and runnable.
+
+Two arms were also run at the extended horizon, `no_tda` and `k=v`, and only
+those two: they are the `{cohort}_ext.json` files under `ablation/`, collected
+by `ablation/all_ext.txt`. Like every `_ext` config they reuse their own arm's
+pretraining and tag the downstream runs `_PLX`. The third row of the paper's
+extended ablation table is the default configuration, which comes from
+`extended.txt`.
+
+### The s_max sweep
+
+`SDTA/medium/smax_sweep/light.json` is the supplement's shift-bound sensitivity
+sweep: `sampling_max` in {12, 18, 24} crossed with W in {2, 4, 8} on the six
+`light` datasets, over **three** seeds (2021–2023) rather than five. Its cells
+are not comparable with the five-seed, twelve-dataset numbers elsewhere. Its
+`s_max = 12` combinations produce the same run names as `SDTA/medium/light` and
+have the same pretraining hyperparameters, so they resume-skip instead of
+re-training. The published table has no (weather, W=8) cell at `s_max` 18 and
+24 because those six runs were never made; the config does not special-case
+them, so running it fills the gap rather than reproducing the exclusion.
 
 ## Execution model
 

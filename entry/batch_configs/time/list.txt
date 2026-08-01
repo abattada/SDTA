@@ -1,5 +1,14 @@
+# Cost table: SDTA at every capacity x W in {1,2,4} plus all seven baselines.
+# A bare SDTA capacity name is the W=4 arm; _W1/_W2 are its W=1/W=2 arms.
+
+time/SDTA_E1_W1
+time/SDTA_E1_W2
 time/SDTA_E1
+time/SDTA_E2_D1_W1
+time/SDTA_E2_D1_W2
 time/SDTA_E2_D1
+time/SDTA_E2_D2_W1
+time/SDTA_E2_D2_W2
 time/SDTA_E2_D2
 time/TimeMAE_CI
 time/TimeDART

@@ -1,0 +1,12 @@
+# SDTA medium (E=2, D=1) - the two ablation arms run at the extended horizon, 11 datasets.
+
+SDTA/medium/ablation/no_tda/light_ext
+SDTA/medium/ablation/no_tda/mid_ext
+SDTA/medium/ablation/no_tda/heavy_ext
+SDTA/medium/ablation/no_tda/pems_light_ext
+SDTA/medium/ablation/no_tda/pems_heavy_ext
+SDTA/medium/ablation/k=v/light_ext
+SDTA/medium/ablation/k=v/mid_ext
+SDTA/medium/ablation/k=v/heavy_ext
+SDTA/medium/ablation/k=v/pems_light_ext
+SDTA/medium/ablation/k=v/pems_heavy_ext

@@ -1,22 +1,20 @@
 {
-  "_doc": "TIMING run for SDTA (SDTA_E2_D1). 6-epoch pretrain+train on a channel ladder, seed 97, num_workers=1. NOTE: the parallel W=2 numbers in §C were produced by a one-chain-per-GPU orchestrator (it patched a W=4 manifest into current_views=2 and pinned one chain per GPU), not by running this config directly; running this config with batch.py is serial (concurrent=1, GPU0) and yields the same numbers. Drop epoch1, average epochs 2..6 of elapsed_sec per stage. [W=2 variant]",
-  "name": "time_SDTA_E2_D1_W2",
+  "_doc": "Ablation (distance code on keys and values (K=V)), SDTA capacity medium (E=2, D=1), cohort heavy: extended-horizon stress test at prediction length 1080, W=4, 5 seeds. Reuses the pretraining of the standard ablation config; outputs are tagged _PLX. Only three arms were run at the extended horizon: the default configuration, k=v and no_tda.",
+  "name": "SDTA_medium_abl_kv_heavy_ext",
   "model_id": "SDTA",
   "datasets": [
-    "ETTh1",
-    "weather",
-    "PEMS08",
-    "electricity",
-    "PEMS07"
+    "traffic"
   ],
   "stages": [
     "pretrain",
-    "train"
+    "train",
+    "test"
   ],
   "auto_enc_in": true,
   "cuda_visible_devices": "0",
-  "min_free_mb": 1000,
+  "min_free_mb": 6000,
   "concurrent": 1,
+  "delay": 10,
   "env": {
     "OMP_NUM_THREADS": "1",
     "MKL_NUM_THREADS": "1",
@@ -24,18 +22,26 @@
     "NUMEXPR_NUM_THREADS": "1"
   },
   "run_name": {
-    "base": "time",
+    "base": "arch_scan",
     "include": [
       "e_layers",
       "d_layers",
+      "mask_ratio",
+      "sampling_max",
+      "lineage_mlp_layers",
+      "kv_share_lineage",
       "current_views",
       "seed"
     ],
     "aliases": {
       "e_layers": "Enc",
       "d_layers": "Dec",
+      "mask_ratio": "Mask",
+      "sampling_max": "SMax",
+      "lineage_mlp_layers": "Lmlp",
       "current_views": "W",
-      "seed": "S"
+      "seed": "S",
+      "kv_share_lineage": "KVShare"
     }
   },
   "grid": {
@@ -45,11 +51,27 @@
     "pretrain.d_layers": [
       1
     ],
+    "pretrain.mask_ratio": [
+      0.5
+    ],
+    "pretrain.sampling_max": [
+      12
+    ],
+    "pretrain.lineage_mlp_layers": [
+      1
+    ],
     "pretrain.current_views": [
-      2
+      4
     ],
     "seed": [
-      97
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "pretrain.kv_share_lineage": [
+      1
     ]
   },
   "stage_defaults": {
@@ -59,7 +81,7 @@
       "input_len": 96,
       "patch_len": 8,
       "batch_size": 16,
-      "train_epochs": 6,
+      "train_epochs": 50,
       "d_model": 32,
       "n_heads": 4,
       "d_ff": 64,
@@ -69,7 +91,7 @@
       "use_norm": 1,
       "scheduler": "cosine",
       "pretrain_causal": 1,
-      "num_workers": 1,
+      "num_workers": 4,
       "w_chunk_size": 0,
       "checkpoint_every": 10,
       "learning_rate": 0.001,
@@ -81,7 +103,7 @@
       "mask_ratio": 0.5,
       "sampling_max": 12,
       "lineage_mlp_layers": 1,
-      "current_views": 2,
+      "current_views": 4,
       "lineage_type": "relative",
       "kv_share_lineage": 0,
       "forced_first_shift_one": 1,
@@ -95,23 +117,30 @@
       "head_dropout": 0.1,
       "batch_size": 16,
       "learning_rate": 0.0001,
-      "train_epochs": 6,
-      "patience": 100,
+      "train_epochs": 10,
+      "patience": 3,
       "pct_start": 0.3,
       "lr_decay": 0.5,
       "lradj": "step",
       "num_workers": 1,
       "freeze_encoder": 0,
       "pred_lens": [
-        96
+        1080
+      ]
+    },
+    "test": {
+      "batch_size": 16,
+      "num_workers": 1,
+      "pred_lens": [
+        1080
       ]
     }
   },
   "variants": [
     {
-      "name": "pretrained",
+      "name": "ext",
+      "suffix": "PLX",
       "load_pretrain_weights": 1
     }
-  ],
-  "gpu_memory_fraction": 0.9
+  ]
 }
