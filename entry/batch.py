@@ -1,8 +1,8 @@
 """Config-driven experiment batch runner.
 
 Example:
-    python entry/batch.py entry/batch_configs/SDTA/v5_lr_1e-4_default.json
-    python entry/batch.py SDTA/v5_lr_1e-4_default --dry-run
+    python entry/batch.py entry/batch_configs/_smoke/etth1.json
+    python entry/batch.py SDTA/medium/light --dry-run
 
 Scheduling model:
     * ``cuda_visible_devices`` lists which physical GPUs are usable.

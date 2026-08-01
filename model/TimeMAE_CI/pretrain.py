@@ -1,6 +1,6 @@
 """TimeMAE_CI pretraining (decoupled masked autoencoder, channel-independent).
 
-Channel-INDEPENDENT variant of `model/TimeMAE/pretrain.py`. The decoupled-MAE
+Channel-INDEPENDENT variant of official TimeMAE pretraining. The decoupled-MAE
 pretext is byte-for-byte the same objective (momentum representation regression +
 codeword classification, `loss = alpha*align + beta*reconstruct`, per-step
 momentum_update); the ONLY change is channel handling: the input projection is the
@@ -13,9 +13,11 @@ Masking keeps TimeMAE's semantics: ONE random patch permutation per forward, app
 across the whole (B*V) batch (faithful to TimeMAE's single-shuffle-per-forward; not
 per-sequence). Only `patch_embedding` + `encoder` weights transfer to the forecaster.
 
-Source ref: `official_source/TimeMAE` (objective) + `model/TimeMAE` (this repo's
-channel-mixing port). Deviation from official = channel handling (B-arch, allowed; see
-docs/check/model_audit.md §10 and Diff_check/TimeMAE_CI.md).
+Source ref: the official TimeMAE implementation (see THIRD_PARTY.md) for the pretext
+objective. The ONLY deviation from official is the channel handling described above:
+a backbone-side (B-arch) change, which this benchmark permits because every method is
+held to one shared encoder; the pretext objective itself is untouched, so a
+TimeMAE_CI-vs-SDTA gap is attributable to the objective and not to channel structure.
 """
 from __future__ import annotations
 

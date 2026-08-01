@@ -10,7 +10,7 @@ from .encoder import ChannelIndependentPatchEmbedding, build_encoder_backbone, n
 class TimeMAECIForecaster(nn.Module):
     """TimeMAE_CI finetune forecaster (channel-independent).
 
-    Channel-independent counterpart of `model/TimeMAE/forecast.py`. Each channel is a
+    Channel-independent counterpart of official TimeMAE's forecaster. Each channel is a
     separate sequence (`(B,L,V) -> (B*V, num_patches, patch_len)`), patch-embedded with
     `Linear(patch_len->d_model)`, encoded, then a per-channel flatten head maps
     `(num_patches*d_model) -> pred_len` (channel-shared, independent of enc_in) — exactly

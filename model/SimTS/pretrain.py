@@ -1,6 +1,6 @@
 """SimTS pretraining ported onto the repo shared patch encoder (channel-independent).
 
-Method = official SimTS (Zheng et al., 2023; `official_source/SimTS`, commit 3e98448):
+Method = official SimTS (Zheng et al., 2023; official release, commit 3e98448):
 a **history** window and a separate **future** window (non-overlapping) are each encoded
 by the shared encoder (Siamese, weights tied); the **last history token** is the history
 summary; a `LinearPred` predictor maps that summary to a predicted future-latent
@@ -19,7 +19,8 @@ repo-unified `input_len`: history `K` -> `input_len=96`; future horizon -> `futu
 (default 96, a bounded choice vs official's very long future). The downstream input budget
 stays 96 (the future window is a pretrain-only target, discarded after pretrain).
 
-What differs from official (all deliberate, see docs/check/SimTS.md):
+What differs from official (all deliberate; each item below names its class —
+B-arch = backbone swap, wiring, or A-class = fairness alignment):
   - **B-arch (encoder)**: official multi-scale dilated causal CNN (`CausalCNNEncoder`,
     channel-mixing `input_fc`, `repr_dims=320`) → repo shared patch Transformer
     (`model.conv_encoder`, channel-independent, `d_model=32`). This is the one allowed
@@ -335,7 +336,7 @@ def pretrain(config: PretrainConfig, max_train_steps: int | None = None, max_val
     model = PretrainModel(config).to(device)
     # Official SimTS optimizer: SGD, two param groups — encoder at `lr`, predictor at
     # `predictor_lr_mult * lr` (official 0.0001 * lr, which nearly freezes the predictor;
-    # kept faithful per docs/check/SimTS.md). No scheduler (official commented its out).
+    # kept faithful here). No scheduler (official commented its out).
     optimizer = torch.optim.SGD(
         [
             {"params": model.encoder_parameters(), "lr": config.learning_rate},

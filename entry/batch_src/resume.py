@@ -86,7 +86,8 @@ def _count_nonblank_lines(path: Path) -> int:
 # Canonical completion sentinel: every stage writes an empty `done` file as its
 # last action (model/_test_io.py write_done). "done exists" == "stage finished".
 # Legacy family-specific markers below stay as a backward-compat fallback for runs
-# produced before this convention. See docs/check/model_audit.md §4.
+# produced before this convention; `entry/batch_src/backfill_done.py` back-fills
+# `done` into those runs so the fallback is not needed twice.
 DONE_MARKER = "done"
 
 

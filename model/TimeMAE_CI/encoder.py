@@ -1,6 +1,6 @@
 """TimeMAE_CI encoder pieces.
 
-Channel-INDEPENDENT counterpart of `model/TimeMAE/encoder.py`. The decoupled-MAE
+Channel-INDEPENDENT port of the official TimeMAE encoder. The decoupled-MAE
 pretext is unchanged; only the input projection differs: instead of the official
 TimeMAE channel-mixing `Conv1d(enc_in->d_model)`, each channel is treated as its
 own sequence (`(B,L,V) -> (B*V, num_patches, patch_len)`) and patch-embedded with a
@@ -8,8 +8,8 @@ shared `Linear(patch_len->d_model)` — exactly the channel-independent patch fr
 used by PatchTST / TimeSiam / SimMTM (`model/conv_encoder.PatchEmbedding`). This makes
 TimeMAE_CI apples-to-apples with those shared-encoder baselines, so a TimeMAE_CI-vs-them
 comparison isolates the SSL objective (channel structure + head capacity confounds
-removed). See docs/models/TimeMAE_CI/README.md and the channel-mixing sibling
-docs/models/TimeMAE/README.md.
+removed). The channel-mixing front-end this replaces is the official TimeMAE one
+(see THIRD_PARTY.md for the upstream repository).
 
 The transformer backbone reuses the repo's shared `conv_encoder.TransformerEncoder`.
 TimeMAE-specific pretrain modules (tokenizer / cross-attention regressor / momentum

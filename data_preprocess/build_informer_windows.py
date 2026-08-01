@@ -146,9 +146,9 @@ def _borders_for(dataset: str, raw_rows: int) -> tuple[dict[str, int], str]:
     rule = DATASETS[dataset][2]
     kind = rule[0]
     if kind == "ett_hour":
-        return _ETT_HOUR, "Informer ETT 12:4:4 month split, hourly (30*24/月)."
+        return _ETT_HOUR, "Informer ETT 12:4:4 month split, hourly (30*24 rows/month)."
     if kind == "ett_minute":
-        return _ETT_MINUTE, "Informer ETT 12:4:4 month split, 15-min (30*24*4/月)."
+        return _ETT_MINUTE, "Informer ETT 12:4:4 month split, 15-min (30*24*4 rows/month)."
     if kind == "ratio":
         train_ratio, val_ratio = rule[1], rule[2]
         n_train = int(raw_rows * train_ratio)

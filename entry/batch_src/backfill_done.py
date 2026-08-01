@@ -1,7 +1,8 @@
 """One-off migration: back-fill the `done` sentinel into already-complete runs.
 
-Before the `done` convention (docs/check/model_audit.md §4), completion was
-detected from family-specific legacy markers. This script scans existing
+Before the `done` convention, completion was detected from family-specific
+legacy markers (each model family wrote its own final artefact, and resume had
+to know all of them). This script scans existing
 `outputs/{pretrain,train,test}/**` and writes an empty `done` file into every run
 dir that the legacy markers say is complete, so resume keeps skipping them after
 the switch to `done`.

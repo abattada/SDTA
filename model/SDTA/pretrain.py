@@ -9,8 +9,9 @@ lineage, kv_value = encoding); the loss is a single MSE on the x0-space
 reconstruction. Ablation arms of the paper map to CLI flags — see
 docs/paper_code_map.md. lineage_type: "relative" is the paper's
 temporal-distance attention; "learnable_token" is the discrete broadcast-token
-ablation; "sinusoidal" is the distance-only broadcast code shown inert by the
-softmax shift-invariance analysis."""
+ablation; "sinusoidal" is a distance-only broadcast code, available as an option
+but not used by any reported experiment (the paper's softmax shift-invariance
+argument about such a code is analytical, not measured)."""
 from __future__ import annotations
 
 import argparse
@@ -94,7 +95,8 @@ class PretrainConfig:
     pretrain_causal: bool = True
     # Default: lineage_type="relative" — the paper's temporal-distance code,
     # position-dependent so it survives the softmax (see RelativeLineagePredictor).
-    # "sinusoidal" = distance-only broadcast code (provably inert), kept for ablation.
+    # "sinusoidal" = distance-only broadcast code, analytically inert under the
+    # softmax; selectable, but no reported experiment uses it.
     # "learnable_token" = TimeSiam-style discrete broadcast token.
     lineage_type: str = "relative"               # "relative" / "sinusoidal" / "learnable_token"
     kv_share_lineage: bool = False               # K=V: 1 = code also added to V
@@ -667,7 +669,8 @@ def _add_config_args(parser: argparse.ArgumentParser) -> None:
         default="relative",
         help="Default 'relative' = position-dependent distance code (varies along "
              "K-axis; breaks the softmax shift-invariance that makes a broadcast code inert). "
-             "'sinusoidal' = distance-only broadcast code (provably inert, kept for ablation). "
+             "'sinusoidal' = distance-only broadcast code (analytically inert; selectable, "
+             "but no reported experiment uses it). "
              "'learnable_token' = discrete TimeSiam-style nn.Embedding indexed by s.",
     )
     parser.add_argument(

@@ -5,20 +5,21 @@ maintains up to N concurrent at a time and starts the next from the list
 when a slot frees up.
 
 Example:
-    # Run 7 ablation cohort configs one at a time, fail-fast:
+    # Run the 5 configs of one ablation cohort, one at a time, fail-fast:
     python entry/batch_queue.py \\
-        SDTA/v9/lineage_token/heavy \\
-        SDTA/v9/lineage_token/light \\
-        SDTA/v9/lineage_token/mid \\
-        SDTA/v9/lineage_token/pems_heavy \\
-        SDTA/v9/lineage_token/pems_light
+        SDTA/medium/ablation/no_tda/heavy \\
+        SDTA/medium/ablation/no_tda/light \\
+        SDTA/medium/ablation/no_tda/mid \\
+        SDTA/medium/ablation/no_tda/pems_heavy \\
+        SDTA/medium/ablation/no_tda/pems_light
 
     # Two cohorts at once, keep going on failure, propagate --min-free-mb:
     python entry/batch_queue.py --concurrent 2 --keep-going --min-free-mb 15000 \\
-        SDTA/v9/lineage_token/heavy SDTA/v9/kv_share/heavy
+        SDTA/medium/ablation/no_tda/heavy SDTA/medium/ablation/no_diffusion/heavy
 
     # Read queue from a text file (one config per line; '#' is comment):
-    python entry/batch_queue.py --list v9_queue.txt --concurrent 2
+    python entry/batch_queue.py --list main_table.txt --concurrent 2
+    # other shipped lists: capacity_sweep.txt, extended.txt
 
 GPU pinning is each config's own responsibility (cuda_visible_devices in the
 config); the queue doesn't try to coordinate GPU allocation across batches.

@@ -107,7 +107,7 @@ def download_ett_dataset(
 ) -> Path:
     if dataset not in SUPPORTED_DATASETS:
         supported = ", ".join(sorted(SUPPORTED_DATASETS))
-        raise ValueError(f"不支援的 ETT dataset: {dataset}. 可用: {supported}")
+        raise ValueError(f"Unsupported ETT dataset: {dataset}. Available: {supported}")
 
     out_dir.mkdir(parents=True, exist_ok=True)
     target_csv = out_dir / f"{dataset}.csv"

@@ -92,7 +92,8 @@ class PretrainWindowDataset(Dataset):
 class PretrainModel(nn.Module):
     """Contrastive Predictive Coding (van den Oord et al., 2018) on the repo shared patch encoder.
 
-    Mapping onto the fixed-encoder protocol (see docs/check/CPC.md):
+    Mapping onto the fixed-encoder protocol (every module below is the shared
+    one; only the CPC-specific prediction heads are extra):
       - g_enc = `patch_embedding.value_embedding` — local per-patch latent z_t (NO position
         encoding, so the InfoNCE target carries no positional shortcut).
       - g_ar  = `encoder` (shared TransformerEncoder) run with a CAUSAL mask — autoregressive
