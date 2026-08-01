@@ -1,3 +1,7 @@
+# Vendored from the official PatchTST implementation
+# (https://github.com/yuqinie98/PatchTST), licensed under Apache License 2.0;
+# see LICENSE-Apache-2.0. Modified for this repository (see THIRD_PARTY.md).
+# RevIN itself is by Kim et al., ICLR 2022 (https://github.com/ts-kim/RevIN).
 import torch
 from torch import nn
 

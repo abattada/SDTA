@@ -21,6 +21,27 @@ section); pretext mechanisms follow the official implementations.
 `model/PatchTST/src/` is directly derived from the official PatchTST code
 (Apache License 2.0), with the encoder backbone swapped for this repository's
 shared small encoder (`model/conv_encoder.py`) and I/O rewired to `data/fine/`.
+A complete, unmodified copy of that license is included at
+[LICENSE-Apache-2.0](LICENSE-Apache-2.0), and every vendored source file under
+`model/PatchTST/src/` that contains code carries a three-line header naming the
+upstream project, the license, and the fact that the file was modified here.
+The four package `__init__.py` files there are empty or contain only whitespace
+and carry no header. The Apache-2.0 terms cover the whole `model/PatchTST/`
+package, not only `src/`: the top-level driver files (`pipeline.py`,
+`datautils.py`, `datautils_fine.py`, `pretrain.py`, `train.py`, `test.py`,
+`test_all.py`) import upstream classes and follow the upstream training flow, so
+they are derivative too. `model/SimTS/` is likewise a port of the official
+SimTS release (also Apache-2.0) rather than an independent implementation; its
+module headers enumerate the deltas. The remainder of this repository is MIT
+(see [LICENSE](LICENSE)).
+
+`model/PatchTST/src/models/layers/revin.py` is RevIN (Kim et al., *Reversible
+Instance Normalization for Accurate Time-Series Forecasting against
+Distribution Shift*, ICLR 2022; https://github.com/ts-kim/RevIN). It reaches
+this repository transitively, as the copy vendored inside the official PatchTST
+code, and is used by every model here through the shared instance-normalization
+path. It is redistributed under the same Apache-2.0 terms as the rest of
+`model/PatchTST/src/`.
 
 The TimeDART, TimeMAE, and SimMTM upstream repositories publish no license
 file; the corresponding directories here are re-implementations of the
